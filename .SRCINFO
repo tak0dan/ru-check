@@ -1,0 +1,25 @@
+pkgbase = suscheck
+	pkgdesc = A script for makepkg/paru to warn about maintainers from countries you can find suspicious. This is not discriminating, but rather information giving tool,that allows to add to a list some domains or locations that you find suspicious for your reasons.
+	pkgver = 1.0.0
+	pkgrel = 1
+	arch = any
+	license = GPL
+	depends = bash
+	depends = jq
+	depends = git
+	depends = curl
+	source = suspcheck.sh
+	source = suscheck.sh
+	source = makepkg.wrapper.sh
+	source = suspcheck-blocked-locations.txt
+	source = suspcheck-denylist.txt
+	source = suspcheck-blocked-domains.txt
+	source = index.json
+	source = suscheck-data.tar.gz
+	sha256sums = SKIP
+	sha256sums = SKIP
+	sha256sums = SKIP
+	sha256sums = SKIP
+	sha256sums = SKIP
+
+pkgname = suscheck
