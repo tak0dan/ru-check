@@ -164,9 +164,25 @@ done
 declare -A WARNINGS
 for user in $GITHUB_USERS; do
     # denylist check
+    # --- Extract GitHub usernames from PKGBUILD ---
+GITHUB_USERS=$(grep -ioE "https?://github.com/([A-Za-z0-9_.-]+)/[A-Za-z0-9_.-]+\.git" "$PKGBUILD" \
+                 | sed -E 's|https?://github.com/([^/]+)/.*\.git|\1|' | sort -u)
+
+# --- Check GitHub usernames against denylist & locations ---
+declare -A WARNINGS
+for user in $GITHUB_USERS; do
+    # denylist check
     for blocked in "${DENYLIST[@]}"; do
-        [[ "$user" == "$blocked" ]] && WARNINGS["user_$user"]="Username $user is in denylist."
+        [[ "$user" == "$blocked" ]] && WARNINGS["user_$user"]="❌ GitHub user $user is denylisted"
     done
+
+    # location check via GitHub API
+    LOCATION=$(curl -s "https://api.github.com/users/$user" | jq -r '.location // empty')
+    for loc in "${SUSP_LOCATIONS[@]}"; do
+        [[ "$LOCATION" == *"$loc"* ]] && WARNINGS["loc_$user"]="❌ GitHub user $user location: $LOCATION"
+    done
+done
+
     # location check via GitHub API
     LOCATION=$(curl -s "https://api.github.com/users/$user" | jq -r '.location // empty')
     for loc in "${SUSP_LOCATIONS[@]}"; do
